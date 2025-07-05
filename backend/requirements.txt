@@ -1,12 +1,15 @@
 fastapi
 uvicorn
 pydantic
-
 scikit-learn
 numpy
 pandas
 joblib
-
 transformers
 torch
 tqdm
+python-multipart
+aiofiles
+jinja2
+starlette
+fastapi[all]

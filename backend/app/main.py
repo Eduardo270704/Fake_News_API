@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware  # ⬅️ IMPORTANTE
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -6,8 +7,17 @@ from app.src.services.classificador import classificar_texto
 from app.src.services.historico import Historico
 from app.src.services.status import obter_status_modelo
 
-
+# Inicializa o app
 app = FastAPI(title="API de Detecção de Fake News", version="1.0")
+
+# ⬅️ HABILITA CORS para permitir requisições do frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # ou ["*"] em ambiente de testes
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Modelo de entrada
 class TextoEntrada(BaseModel):
@@ -21,6 +31,7 @@ def classificar_noticia(entrada: TextoEntrada):
     resultado, confianca = classificar_texto(entrada.texto)
     Historico.adicionar(entrada.texto, resultado, confianca)
     return {
+        "texto": entrada.texto,
         "classificacao": resultado,
         "confianca": confianca,
         "data": datetime.now().isoformat()
