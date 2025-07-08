@@ -1,0 +1,21 @@
+# Imagem base oficial do Python
+FROM python:3.10-slim
+
+# Define o diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copia apenas o arquivo de dependências para instalar primeiro (melhora cache)
+COPY requirements.txt .
+
+# Instala as dependências ignorando cache e hashes
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copia todo o restante do projeto (inclusive app/, data/, src/, etc.)
+COPY . .
+
+# Expõe a porta onde o FastAPI será servido
+EXPOSE 8000
+
+# Comando para iniciar a API
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

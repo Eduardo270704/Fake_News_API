@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fakenews-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fakenews
+  template:
+    metadata:
+      labels:
+        app: fakenews
+    spec:
+      containers:
+        - name: fakenews
+          image: fakenews-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
